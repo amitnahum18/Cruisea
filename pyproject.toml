@@ -1,0 +1,9 @@
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+# Pin explicitly so a newer ruff release changing its own defaults can't
+# silently start failing CI. E4/E7/E9/F is ruff's long-standing classic set
+# (pyflakes + a handful of pycodestyle checks) — this project doesn't opt
+# into the newer style-opinion categories (TRY, DTZ, EM, SIM, ...).
+select = ["E4", "E7", "E9", "F"]
