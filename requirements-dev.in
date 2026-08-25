@@ -1,0 +1,8 @@
+-r requirements.in
+pytest>=8.0,<9
+# Pinned exactly: a newer ruff release broadened its own default rule set
+# (confirmed 0.16.4 vs the 0.11.13 this was validated against) and turned a
+# clean lint into 58 failures with no code change on our side. pyproject.toml
+# also pins an explicit `select` so this can't recur even on a bump.
+ruff==0.16.4
+hypothesis>=6.100,<7
