@@ -1,0 +1,13 @@
+title = "gitleaks config for Cruisea"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Known false positives"
+paths = [
+  # Placeholder value, shaped like a real Apify token but literally the
+  # letter 'x' repeated — not a secret. Real tokens go in .env, which is
+  # gitignored and never committed.
+  '''\.env\.example$''',
+]
