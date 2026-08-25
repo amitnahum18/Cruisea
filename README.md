@@ -59,3 +59,16 @@ to install anything not pinned by hash — this is what caused the ruff incident
 different default behavior) to become structurally impossible for any
 dependency now. To bump a dependency: edit the relevant `.in` file, recompile,
 verify locally, and commit the `.in` and `.txt` files together.
+
+### Security
+
+Every push and pull request against `main` also runs `.github/workflows/security.yml`:
+[gitleaks](https://github.com/gitleaks/gitleaks) (secret scanning), `pip-audit`
+(dependency CVE scanning against the lockfiles), and `bandit` (SAST). It also
+runs weekly on its own, so a new CVE against unchanged code still gets caught.
+See [SECURITY.md](SECURITY.md) for the disclosure process.
+
+`main` is protected: all 6 checks (`Test (Python 3.11)`, `Test (Python 3.12)`,
+`Fuzz (Hypothesis)`, `gitleaks`, `pip-audit`, `bandit`) must pass before a PR
+can merge, enforced for everyone including admins — there is no direct-push
+or bypass path to `main`.
