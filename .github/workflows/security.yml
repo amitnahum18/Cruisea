@@ -18,6 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      # gitleaks-action calls GET /pulls/{n}/commits to scope its scan on PR
+      # events; without this it 403s with "Resource not accessible by
+      # integration" (confirmed via the API's own x-accepted-github-permissions
+      # response header: pull_requests=read).
+      pull-requests: read
     steps:
       - name: Check out code
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
