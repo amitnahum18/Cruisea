@@ -123,7 +123,7 @@ def _itinerary(item: dict) -> str:
     for i in range(1, _MAX_STOPS_TO_JOIN + 1):
         text = item.get(f"stop_{i}_text")
         if text:
-            stops.append(text)
+            stops.append(str(text))
     return " -> ".join(stops)
 
 
@@ -151,6 +151,8 @@ def search_cruises(params: CruiseSearchParams | dict) -> list[CruiseResult]:
     items = run_actor_sync(ACTOR_ID, params.model_dump(exclude_none=True))
     results = []
     for item in items:
+        if not isinstance(item, dict):
+            continue
         item["itinerary"] = _itinerary(item)
         results.append(CruiseResult.model_validate(item))
     return results

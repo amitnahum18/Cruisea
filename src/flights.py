@@ -193,5 +193,11 @@ def search_flights(params: FlightSearchParams | dict) -> list[FlightResult]:
         params = FlightSearchParams(**params)
 
     items = run_actor_sync(ACTOR_ID, params.model_dump(exclude_none=True))
-    flights = [f for item in items for f in item.get("all_flights", [])]
+    flights = [
+        f
+        for item in items
+        if isinstance(item, dict) and isinstance(item.get("all_flights"), list)
+        for f in item["all_flights"]
+        if isinstance(f, dict)
+    ]
     return [FlightResult.model_validate(f) for f in flights]

@@ -124,9 +124,13 @@ def _parse_retry_after(res: requests.Response) -> float | None:
 
 
 def _raise_run_failed(res: requests.Response) -> None:
+    message = res.text[:500]
     try:
         body = res.json()
-        message = body.get("error", {}).get("message", res.text[:500])
+        if isinstance(body, dict):
+            error = body.get("error")
+            if isinstance(error, dict) and isinstance(error.get("message"), str):
+                message = error["message"]
     except ValueError:
-        message = res.text[:500]
+        pass
     raise ApifyRunFailedError(message)

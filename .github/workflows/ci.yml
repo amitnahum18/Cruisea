@@ -33,7 +33,11 @@ jobs:
         run: ruff check src tests
 
       - name: Run tests
-        run: pytest -v --junitxml=junit-${{ matrix.python-version }}.xml
+        run: >
+          pytest -v --junitxml=junit-${{ matrix.python-version }}.xml
+          --ignore=tests/test_flights_fuzz.py
+          --ignore=tests/test_cruises_fuzz.py
+          --ignore=tests/test_apify_client_fuzz.py
 
       - name: Upload test results
         if: always()
@@ -41,3 +45,30 @@ jobs:
         with:
           name: junit-results-${{ matrix.python-version }}
           path: junit-${{ matrix.python-version }}.xml
+
+  fuzz:
+    name: Fuzz (Hypothesis)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install --require-hashes -r requirements-dev.txt
+
+      - name: Run adversarial tests
+        env:
+          HYPOTHESIS_PROFILE: ci
+        run: >
+          pytest -v
+          tests/test_flights_fuzz.py
+          tests/test_cruises_fuzz.py
+          tests/test_apify_client_fuzz.py
